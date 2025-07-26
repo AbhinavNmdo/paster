@@ -95,11 +95,11 @@ export function PasteForm() {
     <form action={formAction} className="space-y-6">
       <input type="hidden" name="content" value={content} />
       <div className="space-y-2">
-        <div className="flex justify-between items-center mb-2">
+        <div className="flex flex-wrap justify-between items-center mb-2 gap-2">
           <Label htmlFor="content-editor" className="text-base font-medium">Your Text / Code</Label>
-          <div className="flex items-center gap-2 w-[240px]">
+          <div className="flex items-center gap-2 flex-shrink-0">
             <Select name="language" value={language} onValueChange={setLanguage}>
-              <SelectTrigger id="language" className="bg-secondary/50 shadow-inner text-xs h-8">
+              <SelectTrigger id="language" className="bg-secondary/50 shadow-inner text-xs h-8 w-[180px]">
                  <Languages className="mr-2 h-4 w-4" /> 
                  <SelectValue placeholder="Detect automatically" />
               </SelectTrigger>
@@ -151,7 +151,7 @@ export function PasteForm() {
             <Timer className="mr-2 h-5 w-5" /> Expiration
           </Label>
           <Select name="expires" defaultValue="never">
-            <SelectTrigger id="expires" className="w-full md:w-[240px] bg-secondary/50 shadow-inner text-sm py-5">
+            <SelectTrigger id="expires" className="w-full bg-secondary/50 shadow-inner text-sm py-5">
               <SelectValue placeholder="Set expiration time" />
             </SelectTrigger>
             <SelectContent>

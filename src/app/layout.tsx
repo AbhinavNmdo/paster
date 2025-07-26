@@ -5,7 +5,6 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/components/ThemeProvider';
-import { useMousePosition } from '@/hooks/useMousePosition';
 import { useRef } from 'react';
 
 // This is a client component, so we can't use the metadata export.
@@ -19,8 +18,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { x, y } = useMousePosition(containerRef);
 
   return (
     <html lang="en" className="h-full" suppressHydrationWarning>
@@ -44,18 +41,10 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <div 
-            ref={containerRef}
             className="relative min-h-screen bg-background"
             style={{
-              backgroundImage: `
-                radial-gradient(
-                  400px circle at ${x}px ${y}px,
-                  hsl(var(--primary) / 0.15),
-                  transparent 80%
-                ),
-                linear-gradient(to right, hsl(var(--primary)/0.1), hsl(var(--secondary)/0.1), hsl(var(--primary)/0.1))
-              `,
-              backgroundSize: '200% auto, 100% 100%',
+              backgroundImage: `linear-gradient(to right, hsl(var(--primary)/0.1), hsl(var(--secondary)/0.1), hsl(var(--primary)/0.1))`,
+              backgroundSize: '200% auto',
               animation: 'background-pan 15s linear infinite',
             } as React.CSSProperties}
           >

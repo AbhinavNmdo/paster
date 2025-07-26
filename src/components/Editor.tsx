@@ -16,7 +16,15 @@ export const Editor: FC<CodeEditorProps> = ({
   language = "plaintext",
 }) => {
   const handleEditorDidMount: OnMount = (editor, monaco) => {
-    // You can add any custom editor configurations here
+    monaco.editor.defineTheme('custom-dark', {
+      base: 'vs-dark',
+      inherit: true,
+      rules: [],
+      colors: {
+        'editor.background': '#101620', // A dark color that fits the theme
+      },
+    });
+    monaco.editor.setTheme('custom-dark');
     editor.focus();
   };
 
@@ -28,7 +36,6 @@ export const Editor: FC<CodeEditorProps> = ({
         value={value}
         onChange={onChange}
         onMount={handleEditorDidMount}
-        theme="vs-dark"
         loading={<Loader2 className="h-8 w-8 animate-spin text-primary" />}
         options={{
           minimap: {
@@ -43,6 +50,7 @@ export const Editor: FC<CodeEditorProps> = ({
             top: 16,
             bottom: 16,
           },
+          background: "transparent",
         }}
       />
     </div>

@@ -95,7 +95,33 @@ export function PasteForm() {
     <form action={formAction} className="space-y-6">
       <input type="hidden" name="content" value={content} />
       <div className="space-y-2">
-        <Label htmlFor="content-editor" className="text-base font-medium">Your Text / Code</Label>
+        <div className="flex justify-between items-center mb-2">
+          <Label htmlFor="content-editor" className="text-base font-medium">Your Text / Code</Label>
+          <div className="flex items-center gap-2 w-[240px]">
+            <Select name="language" value={language} onValueChange={setLanguage}>
+              <SelectTrigger id="language" className="bg-secondary/50 shadow-inner text-xs h-8">
+                 <Languages className="mr-2 h-4 w-4" /> 
+                 <SelectValue placeholder="Detect automatically" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="auto">Detect automatically</SelectItem>
+                {supportedLanguages.map((lang) => (
+                  <SelectItem key={lang} value={lang}>
+                    {lang.charAt(0).toUpperCase() + lang.slice(1)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {(isDetecting || detectedLanguage) && (
+               <Badge variant="outline" className="whitespace-nowrap h-8 text-xs">
+                {isDetecting ? (
+                  <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                ) : null}
+                {detectedLanguage ? `Detected: ${detectedLanguage}` : 'Detecting...'}
+              </Badge>
+            )}
+          </div>
+        </div>
         <Editor 
           value={content}
           onChange={(value) => setContent(value || '')}
@@ -108,35 +134,6 @@ export function PasteForm() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-           <Label htmlFor="language" className="text-base font-medium flex items-center">
-            <Languages className="mr-2 h-5 w-5" /> Language
-          </Label>
-          <div className="flex items-center gap-2">
-            <Select name="language" value={language} onValueChange={setLanguage}>
-              <SelectTrigger id="language" className="w-full bg-secondary/50 shadow-inner text-sm py-5">
-                <SelectValue placeholder="Detect automatically" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="auto">Detect automatically</SelectItem>
-                {supportedLanguages.map((lang) => (
-                  <SelectItem key={lang} value={lang}>
-                    {lang.charAt(0).toUpperCase() + lang.slice(1)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {(isDetecting || detectedLanguage) && (
-               <Badge variant="outline" className="whitespace-nowrap h-9">
-                {isDetecting ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : null}
-                {detectedLanguage ? `Detected: ${detectedLanguage}` : 'Detecting...'}
-              </Badge>
-            )}
-          </div>
-        </div>
-
-        <div className="space-y-2">
           <Label htmlFor="password" className="text-base font-medium flex items-center">
             <KeyRound className="mr-2 h-5 w-5" /> Password <span className='text-xs text-muted-foreground ml-2'>(Optional)</span>
           </Label>
@@ -148,24 +145,24 @@ export function PasteForm() {
             className="bg-secondary/50 shadow-inner text-sm py-5 focus:bg-background transition-colors duration-300"
           />
         </div>
-      </div>
       
-      <div className="space-y-2">
-        <Label htmlFor="expires" className="text-base font-medium flex items-center">
-          <Timer className="mr-2 h-5 w-5" /> Expiration
-        </Label>
-        <Select name="expires" defaultValue="never">
-          <SelectTrigger id="expires" className="w-full md:w-[240px] bg-secondary/50 shadow-inner text-sm py-5">
-            <SelectValue placeholder="Set expiration time" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="never">Never</SelectItem>
-            <SelectItem value="10m">10 Minutes</SelectItem>
-            <SelectItem value="1h">1 Hour</SelectItem>
-            <SelectItem value="1d">1 Day</SelectItem>
-            <SelectItem value="1w">1 Week</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="space-y-2">
+          <Label htmlFor="expires" className="text-base font-medium flex items-center">
+            <Timer className="mr-2 h-5 w-5" /> Expiration
+          </Label>
+          <Select name="expires" defaultValue="never">
+            <SelectTrigger id="expires" className="w-full md:w-[240px] bg-secondary/50 shadow-inner text-sm py-5">
+              <SelectValue placeholder="Set expiration time" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="never">Never</SelectItem>
+              <SelectItem value="10m">10 Minutes</SelectItem>
+              <SelectItem value="1h">1 Hour</SelectItem>
+              <SelectItem value="1d">1 Day</SelectItem>
+              <SelectItem value="1w">1 Week</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <div className="flex justify-end pt-2">

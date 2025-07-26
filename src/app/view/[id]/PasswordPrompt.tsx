@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { KeyRound, Loader2, LogIn } from 'lucide-react';
 import Header from '@/components/Header';
 import { useToast } from '@/hooks/use-toast';
+import type { Paste } from '@/lib/db';
 
 interface PasswordPromptProps {
   id: string;
@@ -45,12 +46,18 @@ export default function PasswordPrompt({ id }: PasswordPromptProps) {
     }
   }, [state, toast]);
 
-  if (showPaste && state.decryptedContent) {
+  if (showPaste && state.decryptedContent && state.language) {
+    const paste: Paste = {
+      id,
+      content: state.decryptedContent,
+      language: state.language,
+      createdAt: new Date(), // This is not ideal, but we don't have the original date here.
+    };
     return (
       <div className="flex flex-col min-h-screen bg-secondary/40">
         <Header />
         <main className="flex-1 w-full max-w-6xl mx-auto mt-8 px-4">
-          <CodeView paste={{ id, content: state.decryptedContent, language: state.language!, createdAt: new Date() }} />
+          <CodeView paste={paste} />
         </main>
       </div>
     );

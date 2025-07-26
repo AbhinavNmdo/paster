@@ -1,12 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getPaste, isPastePasswordProtected, Paste } from "@/lib/db";
-import { notFound } from "next/navigation";
+import type { Paste } from "@/lib/db";
 import Header from "@/components/Header";
 import { CodeView } from "@/components/CodeView";
 import PasswordPrompt from "./PasswordPrompt";
 import { Skeleton } from '@/components/ui/skeleton';
+import { getPasteData, isPasteProtected } from './actions';
+import NotFound from './not-found';
 
 interface ViewPageProps {
   params: {
@@ -33,23 +34,33 @@ export default function ViewPage({ params }: ViewPageProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [isProtected, setIsProtected] = useState<boolean | null>(null);
   const [paste, setPaste] = useState<Paste | null | undefined>(null);
+  const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const protectedStatus = await isPastePasswordProtected(params.id);
+        const protectedStatus = await isPasteProtected(params.id);
+
+        if (protectedStatus === null) {
+          setNotFound(true);
+          setIsLoading(false);
+          return;
+        }
+
         setIsProtected(protectedStatus);
 
         if (!protectedStatus) {
-          const fetchedPaste = await getPaste(params.id);
-          setPaste(fetchedPaste);
+          const fetchedPaste = await getPasteData(params.id);
           if (!fetchedPaste) {
-             notFound();
+             setNotFound(true);
+          } else {
+            setPaste(fetchedPaste);
           }
         }
       } catch (error) {
         console.error("Failed to fetch paste data", error);
         setPaste(undefined);
+        setNotFound(true);
       } finally {
         setIsLoading(false);
       }
@@ -60,13 +71,18 @@ export default function ViewPage({ params }: ViewPageProps) {
   if (isLoading) {
     return <ViewPageLoader />;
   }
+  
+  if (notFound) {
+    return <NotFound />;
+  }
 
   if (isProtected) {
     return <PasswordPrompt id={params.id} />;
   }
 
   if (!paste) {
-    notFound();
+    // This case handles when paste is null/undefined after loading and it's not protected
+    return <NotFound />;
   }
 
   return (

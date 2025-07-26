@@ -64,7 +64,12 @@ function parseExpiration(expires?: string): number | null {
     case 'h': return value * 60 * 60 * 1000;
     case 'd': return value * 24 * 60 * 60 * 1000;
     case 'w': return value * 7 * 24 * 60 * 60 * 1000;
-    default: return null;
+    default: 
+        // If no unit, assume minutes for custom values
+        if (!isNaN(parseInt(expires, 10))) {
+             return parseInt(expires, 10) * 60 * 1000;
+        }
+        return null;
   }
 }
 

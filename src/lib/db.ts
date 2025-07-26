@@ -8,33 +8,29 @@ export interface Paste {
   createdAt: Date;
 }
 
-const MONGODB_URI = process.env.MONGODB_URI;
+let client: MongoClient | null = null;
+let clientPromise: Promise<MongoClient> | null = null;
 
-if (!MONGODB_URI) {
-  throw new Error('Please define the MONGODB_URI environment variable inside .env');
-}
-
-let client: MongoClient;
-let clientPromise: Promise<MongoClient>;
-
-if (process.env.NODE_ENV === 'development') {
-  let globalWithMongo = global as typeof globalThis & {
-    _mongoClientPromise?: Promise<MongoClient>
+function getClient(): Promise<MongoClient> {
+  if (client && clientPromise) {
+    return clientPromise;
   }
-  if (!globalWithMongo._mongoClientPromise) {
-    client = new MongoClient(MONGODB_URI, {});
-    globalWithMongo._mongoClientPromise = client.connect();
+
+  const MONGODB_URI = process.env.MONGODB_URI;
+  if (!MONGODB_URI) {
+    throw new Error('Please define the MONGODB_URI environment variable inside .env');
   }
-  clientPromise = globalWithMongo._mongoClientPromise;
-} else {
+
   client = new MongoClient(MONGODB_URI, {});
   clientPromise = client.connect();
+  
+  return clientPromise;
 }
 
 const dbName = 'text-sharer';
 
 async function getPastesCollection() {
-    const client = await clientPromise;
+    const client = await getClient();
     const db = client.db(dbName);
     return db.collection<Paste>('pastes');
 }

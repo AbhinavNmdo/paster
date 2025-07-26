@@ -4,8 +4,8 @@ import { Button } from './ui/button';
 
 export default function Header() {
   return (
-    <header className="w-full max-w-6xl mx-auto px-4 py-3">
-      <div className="flex items-center justify-between h-14">
+    <header className="w-full max-w-6xl mx-auto px-4 py-2">
+      <div className="flex items-center justify-between h-12">
         <Link href="/" className="flex items-center justify-center gap-2 text-xl md:text-2xl font-bold group">
             <div className="p-2 bg-primary/10 rounded-lg border border-primary/20 group-hover:bg-primary/20 transition-colors">
               <FileText className="w-5 h-5 text-primary transition-transform group-hover:scale-110" />

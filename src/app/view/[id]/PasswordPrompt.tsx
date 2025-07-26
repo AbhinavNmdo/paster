@@ -57,9 +57,9 @@ export default function PasswordPrompt({ id }: PasswordPromptProps) {
   }
 
   return (
-    <div className="flex flex-col min-h-screen p-4">
-      <Header />
-      <main className="flex-1 flex items-center justify-center w-full">
+    <div className="flex flex-col min-h-screen">
+       <Header />
+      <main className="flex-1 flex items-center justify-center w-full p-4">
         <div className="w-full max-w-md">
           <Card className="shadow-2xl shadow-primary/20">
             <CardHeader className="text-center">

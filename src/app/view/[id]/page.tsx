@@ -9,21 +9,36 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { getPasteData, isPasteProtected } from './actions';
 import NotFound from './not-found';
 import { useParams } from 'next/navigation';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
 function ViewPageLoader() {
-    return (
-        <div className="flex flex-col min-h-screen">
-            <Header />
-            <main className="flex-1 w-full max-w-6xl mx-auto mt-8 px-4">
-                <div className="space-y-4">
-                    <Skeleton className="h-10 w-1/3" />
-                    <Skeleton className="h-8 w-1/4" />
-                    <Skeleton className="h-96 w-full" />
-                </div>
-            </main>
-        </div>
-    );
+  return (
+    <div className="flex flex-col min-h-screen">
+      <Header />
+      <main className="flex-1 w-full max-w-6xl mx-auto px-4 py-8">
+        <Card className="relative transition-all border-primary/20 bg-card/80 backdrop-blur-sm hover:shadow-primary/20 hover:shadow-2xl hover:border-primary/40">
+           <CardHeader>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div>
+                <Skeleton className="h-7 w-48 mb-2" />
+                <Skeleton className="h-5 w-64" />
+              </div>
+              <div className="flex items-center gap-2">
+                <Skeleton className="h-10 w-24" />
+                <Skeleton className="h-10 w-32" />
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <Skeleton className="h-8 w-28 mb-4" />
+            <Skeleton className="h-96 w-full" />
+          </CardContent>
+        </Card>
+      </main>
+    </div>
+  );
 }
+
 
 export default function ViewPage() {
   const params = useParams();

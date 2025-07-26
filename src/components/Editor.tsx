@@ -1,6 +1,6 @@
 "use client";
 
-import Editor, { OnChange, OnMount } from "@monaco-editor/react";
+import MonacoEditor, { OnChange, OnMount } from "@monaco-editor/react";
 import { FC } from "react";
 import { Loader2 } from "lucide-react";
 
@@ -22,7 +22,7 @@ export const Editor: FC<CodeEditorProps> = ({
 
   return (
     <div className="relative w-full h-[300px] rounded-lg overflow-hidden border border-input focus-within:ring-2 focus-within:ring-ring">
-      <Editor
+      <MonacoEditor
         height="100%"
         language={language}
         value={value}

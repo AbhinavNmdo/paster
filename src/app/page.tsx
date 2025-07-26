@@ -1,3 +1,5 @@
+'use client';
+
 import Header from "@/components/Header";
 import { PasteForm } from "@/components/PasteForm";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";

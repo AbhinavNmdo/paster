@@ -11,7 +11,7 @@ export default function NotFound() {
     <div className="flex flex-col items-center min-h-screen">
       <Header />
       <main className="flex-1 flex items-center justify-center w-full max-w-md p-4">
-        <Card className="text-center shadow-lg w-full">
+        <Card className="text-center shadow-2xl shadow-destructive/20 w-full transition-all hover:shadow-destructive/30">
           <CardHeader>
             <div className="mx-auto bg-destructive/10 rounded-full p-4 w-fit">
               <FileQuestion className="w-12 h-12 text-destructive" />

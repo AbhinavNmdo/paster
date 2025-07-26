@@ -66,7 +66,7 @@ export function CodeView({ paste }: CodeViewProps) {
   };
 
   return (
-    <Card className="shadow-lg border-primary/20">
+    <Card className="shadow-2xl border-primary/20 shadow-primary/20 transition-all hover:shadow-primary/30">
       <CardHeader>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>

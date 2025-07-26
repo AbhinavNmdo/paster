@@ -19,7 +19,7 @@ interface PasswordPromptProps {
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" disabled={pending} size="lg">
+    <Button type="submit" disabled={pending} size="lg" className="w-full">
       {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <LogIn className="mr-2 h-4 w-4" />}
       Unlock Paste
     </Button>
@@ -57,38 +57,40 @@ export default function PasswordPrompt({ id }: PasswordPromptProps) {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4">
+    <div className="flex flex-col min-h-screen p-4">
       <Header />
-      <main className="w-full max-w-md">
-        <Card className="shadow-2xl shadow-primary/20">
-          <CardHeader className="text-center">
-            <div className="mx-auto bg-primary/10 rounded-full p-4 w-fit mb-4">
-              <KeyRound className="w-10 h-10 text-primary" />
-            </div>
-            <CardTitle className="text-2xl">Password Protected</CardTitle>
-            <CardDescription>
-              Please enter the password to view this paste.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form action={formAction} className="space-y-6">
-              <input type="hidden" name="id" value={id} />
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  required
-                  className="bg-secondary/50"
-                  placeholder="Enter password"
-                />
+      <main className="flex-1 flex items-center justify-center w-full">
+        <div className="w-full max-w-md">
+          <Card className="shadow-2xl shadow-primary/20">
+            <CardHeader className="text-center">
+              <div className="mx-auto bg-primary/10 rounded-full p-4 w-fit mb-4">
+                <KeyRound className="w-10 h-10 text-primary" />
               </div>
-              <SubmitButton />
-              {state.error && <p className="text-sm text-destructive text-center">{state.error}</p>}
-            </form>
-          </CardContent>
-        </Card>
+              <CardTitle className="text-2xl">Password Protected</CardTitle>
+              <CardDescription>
+                Please enter the password to view this paste.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form action={formAction} className="space-y-6">
+                <input type="hidden" name="id" value={id} />
+                <div className="space-y-2">
+                  <Label htmlFor="password">Password</Label>
+                  <Input
+                    id="password"
+                    name="password"
+                    type="password"
+                    required
+                    className="bg-secondary/50"
+                    placeholder="Enter password"
+                  />
+                </div>
+                <SubmitButton />
+                {state.error && <p className="text-sm text-destructive text-center pt-2">{state.error}</p>}
+              </form>
+            </CardContent>
+          </Card>
+        </div>
       </main>
     </div>
   );

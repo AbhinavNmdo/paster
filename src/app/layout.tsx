@@ -33,7 +33,7 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
-          <div className="relative min-h-screen bg-[radial-gradient(ellipse_120%_80%_at_50%_-20%,rgba(120,119,198,0.3),transparent)]">
+          <div className="relative min-h-screen bg-[linear-gradient(to_right,hsl(var(--primary)/0.1),hsl(var(--secondary)/0.1),hsl(var(--primary)/0.1))] bg-[length:200%_auto] animate-background-pan">
             {children}
           </div>
           <Toaster />

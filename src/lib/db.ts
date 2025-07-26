@@ -48,12 +48,24 @@ function fromMongo<T extends Document>(doc: WithId<T> | null): T | undefined {
     return rest as T;
 }
 
-const expirationMap: Record<string, number | null> = {
-  'never': null,
-  '10m': 10 * 60 * 1000,
-  '1h': 60 * 60 * 1000,
-  '1d': 24 * 60 * 60 * 1000,
-  '1w': 7 * 24 * 60 * 60 * 1000,
+function parseExpiration(expires?: string): number | null {
+  if (!expires || expires === 'never') {
+    return null;
+  }
+  const unit = expires.slice(-1);
+  const value = parseInt(expires.slice(0, -1), 10);
+
+  if (isNaN(value)) {
+    return null;
+  }
+
+  switch(unit) {
+    case 'm': return value * 60 * 1000;
+    case 'h': return value * 60 * 60 * 1000;
+    case 'd': return value * 24 * 60 * 60 * 1000;
+    case 'w': return value * 7 * 24 * 60 * 60 * 1000;
+    default: return null;
+  }
 }
 
 export async function savePaste(content: string, language: string, hasPassword?: boolean, expires?: string): Promise<string> {
@@ -62,8 +74,9 @@ export async function savePaste(content: string, language: string, hasPassword?:
   const now = new Date();
   let expiresAt: Date | null = null;
 
-  if (expires && expirationMap[expires]) {
-    expiresAt = new Date(now.getTime() + expirationMap[expires]!);
+  const expirationMs = parseExpiration(expires);
+  if (expirationMs) {
+    expiresAt = new Date(now.getTime() + expirationMs);
   }
   
   const newPaste: Paste = {

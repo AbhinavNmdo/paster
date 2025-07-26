@@ -56,6 +56,7 @@ export function PasteForm() {
   const [language, setLanguage] = useState('auto');
   const [detectedLanguage, setDetectedLanguage] = useState<string | null>(null);
   const [isDetecting, startDetecting] = useTransition();
+  const [expires, setExpires] = useState('never');
 
   const debouncedContent = useDebounce(content, 500);
 
@@ -77,17 +78,12 @@ export function PasteForm() {
   }, [debouncedContent, language]);
 
   useEffect(() => {
-    if (state.errors?.server) {
+    const error = state.errors?.server?.[0] || state.errors?.content?.[0] || state.errors?.customExpires?.[0];
+    if (error) {
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: state.errors.server.join(', '),
-      });
-    } else if (state.errors?.content) {
-       toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: state.errors.content.join(', '),
+        description: error,
       });
     }
   }, [state, toast]);
@@ -101,6 +97,7 @@ export function PasteForm() {
 
   return (
     <form action={handleFormAction} className="space-y-6">
+       <input type="hidden" name="content" value={content} />
       <div className="space-y-2">
          <div className="flex justify-between items-center mb-2 gap-2 flex-wrap">
           <Select name="language" value={language} onValueChange={setLanguage}>
@@ -157,18 +154,33 @@ export function PasteForm() {
           <Label htmlFor="expires" className="text-base font-medium flex items-center">
             <Timer className="mr-2 h-5 w-5" /> Expiration
           </Label>
-          <Select name="expires" defaultValue="never">
-            <SelectTrigger id="expires" className="w-full bg-secondary/50 shadow-inner text-sm py-5">
-              <SelectValue placeholder="Set expiration time" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="never">Never</SelectItem>
-              <SelectItem value="10m">10 Minutes</SelectItem>
-              <SelectItem value="1h">1 Hour</SelectItem>
-              <SelectItem value="1d">1 Day</SelectItem>
-              <SelectItem value="1w">1 Week</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className='flex gap-2'>
+            <Select name="expires" value={expires} onValueChange={setExpires}>
+              <SelectTrigger id="expires" className="w-full bg-secondary/50 shadow-inner text-sm py-5">
+                <SelectValue placeholder="Set expiration time" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="never">Never</SelectItem>
+                <SelectItem value="10m">10 Minutes</SelectItem>
+                <SelectItem value="1h">1 Hour</SelectItem>
+                <SelectItem value="1d">1 Day</SelectItem>
+                <SelectItem value="1w">1 Week</SelectItem>
+                <SelectItem value="custom">Custom (Minutes)</SelectItem>
+              </SelectContent>
+            </Select>
+            {expires === 'custom' && (
+              <Input
+                name="customExpires"
+                type="number"
+                placeholder="Mins"
+                className="w-24 bg-secondary/50 shadow-inner text-sm py-5 focus:bg-background transition-colors duration-300"
+                min="1"
+              />
+            )}
+          </div>
+           {state.errors?.customExpires && (
+            <p className="text-sm font-medium text-destructive">{state.errors.customExpires}</p>
+          )}
         </div>
       </div>
 

@@ -12,6 +12,7 @@ const formSchema = z.object({
   language: z.string().optional(),
   password: z.string().optional(),
   expires: z.string().optional(),
+  customExpires: z.string().optional(),
 });
 
 export interface FormState {
@@ -21,6 +22,7 @@ export interface FormState {
     language?: string[];
     password?: string[];
     server?: string[];
+    customExpires?: string[];
   };
 }
 
@@ -33,6 +35,7 @@ export async function createPaste(
     language: formData.get('language'),
     password: formData.get('password'),
     expires: formData.get('expires'),
+    customExpires: formData.get('customExpires'),
   });
 
   if (!validatedFields.success) {
@@ -42,8 +45,23 @@ export async function createPaste(
     };
   }
 
-  const { content, language: languageOverride, password, expires } = validatedFields.data;
+  const { content, language: languageOverride, password, expires, customExpires } = validatedFields.data;
   let id: string;
+  
+  let expirationValue = expires;
+  if (expires === 'custom' && customExpires) {
+    const customMinutes = parseInt(customExpires, 10);
+    if (isNaN(customMinutes) || customMinutes <= 0) {
+      return {
+        message: 'Invalid custom expiration.',
+        errors: {
+          customExpires: ['Please enter a valid number of minutes.'],
+        }
+      }
+    }
+    expirationValue = `${customMinutes}m`;
+  }
+
 
   try {
     let language = languageOverride;
@@ -60,7 +78,7 @@ export async function createPaste(
       hasPassword = true;
     }
 
-    id = await savePaste(finalContent, language, hasPassword, expires);
+    id = await savePaste(finalContent, language, hasPassword, expirationValue);
 
   } catch (error) {
     console.error(error);

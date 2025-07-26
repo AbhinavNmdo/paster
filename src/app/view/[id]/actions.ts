@@ -1,6 +1,7 @@
 'use server';
 
-import { getPaste, isPastePasswordProtected, Paste } from "@/lib/db";
+import { getPaste } from "@/lib/db";
+import type { Paste } from "@/lib/db";
 
 export async function getPasteData(id: string): Promise<Paste | undefined> {
   return await getPaste(id);

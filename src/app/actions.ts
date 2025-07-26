@@ -1,6 +1,5 @@
 'use server';
 
-import { detectLanguage } from '@/ai/flows/detect-language';
 import { getPaste, savePaste } from '@/lib/db';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
@@ -45,7 +44,7 @@ export async function createPaste(
     };
   }
 
-  const { content, language: languageOverride, password, expires, customExpires } = validatedFields.data;
+  const { content, language, password, expires, customExpires } = validatedFields.data;
   let id: string;
   
   let expirationValue = expires;
@@ -72,13 +71,6 @@ export async function createPaste(
 
 
   try {
-    let language = languageOverride;
-    if (!language || language === 'auto') {
-      const contentForDetection = content.substring(0, 2000);
-      const detectionResult = await detectLanguage({ code: contentForDetection });
-      language = detectionResult.language.toLowerCase();
-    }
-    
     let finalContent = content;
     let hasPassword = false;
     if (password) {
@@ -86,7 +78,7 @@ export async function createPaste(
       hasPassword = true;
     }
 
-    id = await savePaste(finalContent, language, hasPassword, expirationValue);
+    id = await savePaste(finalContent, language || 'plaintext', hasPassword, expirationValue);
 
   } catch (error) {
     console.error(error);

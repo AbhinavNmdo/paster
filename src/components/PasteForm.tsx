@@ -1,7 +1,7 @@
 'use client';
 
 import { useFormStatus } from 'react-dom';
-import { useActionState, useEffect, useState, useTransition, useRef } from 'react';
+import { useActionState, useEffect, useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import {
@@ -16,9 +16,6 @@ import { supportedLanguages } from '@/lib/languages';
 import { Share2, Loader2, Languages, KeyRound, Timer } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from './ui/input';
-import { Badge } from './ui/badge';
-import { detectLanguage } from '@/ai/flows/detect-language';
-import { useDebounce } from '@/hooks/use-debounce';
 import { Editor, EditorRef } from './Editor';
 
 function SubmitButton() {
@@ -53,29 +50,8 @@ export function PasteForm() {
   const editorRef = useRef<EditorRef>(null);
 
   const [content, setContent] = useState('');
-  const [language, setLanguage] = useState('auto');
-  const [detectedLanguage, setDetectedLanguage] = useState<string | null>(null);
-  const [isDetecting, startDetecting] = useTransition();
+  const [language, setLanguage] = useState('plaintext');
   const [expires, setExpires] = useState('never');
-
-  const debouncedContent = useDebounce(content, 500);
-
-  useEffect(() => {
-    if (debouncedContent && language === 'auto') {
-      startDetecting(async () => {
-        try {
-          const contentForDetection = debouncedContent.substring(0, 2000);
-          const result = await detectLanguage({ code: contentForDetection });
-          setDetectedLanguage(result.language);
-        } catch (error) {
-          console.error("Language detection failed:", error);
-          setDetectedLanguage(null);
-        }
-      });
-    } else {
-      setDetectedLanguage(null);
-    }
-  }, [debouncedContent, language]);
 
   useEffect(() => {
     const error = state.errors?.server?.[0] || state.errors?.content?.[0] || state.errors?.customExpires?.[0];
@@ -103,10 +79,9 @@ export function PasteForm() {
           <Select name="language" value={language} onValueChange={setLanguage}>
             <SelectTrigger id="language" className="bg-secondary/50 shadow-inner text-xs h-8 w-[180px]">
                 <Languages className="mr-2 h-4 w-4" /> 
-                <SelectValue placeholder="Detect automatically" />
+                <SelectValue placeholder="Select language" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="auto">Detect automatically</SelectItem>
               {supportedLanguages.map((lang) => (
                 <SelectItem key={lang} value={lang}>
                   {lang.charAt(0).toUpperCase() + lang.slice(1)}
@@ -114,22 +89,12 @@ export function PasteForm() {
               ))}
             </SelectContent>
           </Select>
-          <div className="flex items-center gap-2 flex-shrink-0">
-            {(isDetecting || detectedLanguage) && (
-                <Badge variant="outline" className="whitespace-nowrap h-8 text-xs">
-                {isDetecting ? (
-                  <Loader2 className="mr-1 h-3 w-3 animate-spin" />
-                ) : null}
-                {detectedLanguage ? `Detected: ${detectedLanguage}` : 'Detecting...'}
-              </Badge>
-            )}
-          </div>
         </div>
         <Editor 
           ref={editorRef}
           value={content}
           onChange={(value) => setContent(value || '')}
-          language={language !== 'auto' ? language.toLowerCase() : (detectedLanguage?.toLowerCase() ?? 'plaintext')}
+          language={language.toLowerCase()}
         />
          {state.errors?.content && (
           <p className="text-sm font-medium text-destructive">{state.errors.content}</p>

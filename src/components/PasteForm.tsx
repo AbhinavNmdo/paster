@@ -151,7 +151,7 @@ export function PasteForm() {
             <Timer className="mr-2 h-5 w-5" /> Expiration
           </Label>
           <Select name="expires" defaultValue="never">
-            <SelectTrigger id="expires" className="w-full bg-secondary/50 shadow-inner text-sm py-5">
+            <SelectTrigger id="expires" className="w-full bg-secondary/50 shadow-inner text-sm py-5 justify-start">
               <SelectValue placeholder="Set expiration time" />
             </SelectTrigger>
             <SelectContent>

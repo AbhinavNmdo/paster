@@ -62,6 +62,14 @@ export const Editor = forwardRef<EditorRef, CodeEditorProps>(
               bottom: 16,
             },
             background: "transparent",
+            quickSuggestions: false,
+            hover: {
+              enabled: false
+            },
+            parameterHints: {
+              enabled: false
+            },
+            renderValidationDecorations: 'off'
           }}
         />
       </div>

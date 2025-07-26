@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/select';
 import { createPaste, type FormState } from '@/app/actions';
 import { supportedLanguages } from '@/lib/languages';
-import { Share2, Loader2, Languages, EyeOff, Timer, KeyRound } from 'lucide-react';
+import { Share2, Loader2, Languages, KeyRound, Timer } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from './ui/input';
 import { Badge } from './ui/badge';
@@ -29,7 +29,7 @@ function SubmitButton() {
       type="submit"
       disabled={pending}
       size="lg"
-      className="w-full text-lg py-6 px-8 transition-all duration-300 ease-in-out hover:shadow-primary/20 hover:scale-105 bg-primary/90 hover:bg-primary"
+      className="w-full text-base py-5 px-6 transition-all duration-300 ease-in-out hover:shadow-primary/20 hover:scale-105 bg-primary/90 hover:bg-primary"
     >
       {pending ? (
         <>
@@ -93,15 +93,15 @@ export function PasteForm() {
 
   return (
     <form action={formAction} className="space-y-6">
-      <div className="space-y-3">
-        <Label htmlFor="content" className="text-lg font-medium">Your Text / Code</Label>
+      <div className="space-y-2">
+        <Label htmlFor="content" className="text-base font-medium">Your Text / Code</Label>
         <Textarea
           id="content"
           name="content"
           value={content}
           onChange={(e) => setContent(e.target.value)}
           placeholder="Paste anything you want to share..."
-          className="min-h-[350px] font-code text-base bg-secondary/50 shadow-inner focus:bg-background transition-colors duration-300 focus:ring-2 focus:ring-primary/50"
+          className="min-h-[300px] font-code text-sm bg-secondary/50 shadow-inner focus:bg-background transition-colors duration-300 focus:ring-2 focus:ring-primary/50"
           required
         />
          {state.errors?.content && (
@@ -109,14 +109,14 @@ export function PasteForm() {
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-3">
-           <Label htmlFor="language" className="text-lg font-medium flex items-center">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+           <Label htmlFor="language" className="text-base font-medium flex items-center">
             <Languages className="mr-2 h-5 w-5" /> Language
           </Label>
           <div className="flex items-center gap-2">
             <Select name="language" value={language} onValueChange={setLanguage}>
-              <SelectTrigger id="language" className="w-full bg-secondary/50 shadow-inner text-base py-5">
+              <SelectTrigger id="language" className="w-full bg-secondary/50 shadow-inner text-sm py-5">
                 <SelectValue placeholder="Detect automatically" />
               </SelectTrigger>
               <SelectContent>
@@ -129,7 +129,7 @@ export function PasteForm() {
               </SelectContent>
             </Select>
             {(isDetecting || detectedLanguage) && (
-               <Badge variant="outline" className="whitespace-nowrap h-10">
+               <Badge variant="outline" className="whitespace-nowrap h-9">
                 {isDetecting ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 ) : null}
@@ -139,26 +139,26 @@ export function PasteForm() {
           </div>
         </div>
 
-        <div className="space-y-3">
-          <Label htmlFor="password" className="text-lg font-medium flex items-center">
-            <KeyRound className="mr-2 h-5 w-5" /> Password <span className='text-sm text-muted-foreground ml-2'>(Optional)</span>
+        <div className="space-y-2">
+          <Label htmlFor="password" className="text-base font-medium flex items-center">
+            <KeyRound className="mr-2 h-5 w-5" /> Password <span className='text-xs text-muted-foreground ml-2'>(Optional)</span>
           </Label>
           <Input
             id="password"
             name="password"
             type="password"
             placeholder="Secure your paste"
-            className="bg-secondary/50 shadow-inner text-base py-5 focus:bg-background transition-colors duration-300"
+            className="bg-secondary/50 shadow-inner text-sm py-5 focus:bg-background transition-colors duration-300"
           />
         </div>
       </div>
       
-      <div className="space-y-3">
-        <Label htmlFor="expires" className="text-lg font-medium flex items-center">
+      <div className="space-y-2">
+        <Label htmlFor="expires" className="text-base font-medium flex items-center">
           <Timer className="mr-2 h-5 w-5" /> Expiration
         </Label>
         <Select name="expires" defaultValue="never">
-          <SelectTrigger id="expires" className="w-full md:w-[240px] bg-secondary/50 shadow-inner text-base py-5">
+          <SelectTrigger id="expires" className="w-full md:w-[240px] bg-secondary/50 shadow-inner text-sm py-5">
             <SelectValue placeholder="Set expiration time" />
           </SelectTrigger>
           <SelectContent>
@@ -171,7 +171,7 @@ export function PasteForm() {
         </Select>
       </div>
 
-      <div className="flex justify-end pt-4">
+      <div className="flex justify-end pt-2">
         <SubmitButton />
       </div>
        {state.errors?.server && (

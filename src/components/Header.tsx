@@ -4,11 +4,11 @@ import { Button } from './ui/button';
 
 export default function Header() {
   return (
-    <header className="w-full max-w-6xl mx-auto px-4 py-4">
-      <div className="flex items-center justify-between h-16">
-        <Link href="/" className="flex items-center justify-center gap-3 text-2xl md:text-3xl font-bold group">
+    <header className="w-full max-w-6xl mx-auto px-4 py-3">
+      <div className="flex items-center justify-between h-14">
+        <Link href="/" className="flex items-center justify-center gap-2 text-xl md:text-2xl font-bold group">
             <div className="p-2 bg-primary/10 rounded-lg border border-primary/20 group-hover:bg-primary/20 transition-colors">
-              <FileText className="w-6 h-6 text-primary transition-transform group-hover:scale-110" />
+              <FileText className="w-5 h-5 text-primary transition-transform group-hover:scale-110" />
             </div>
             <h1 className="bg-gradient-to-r from-primary via-purple-400 to-blue-400 text-transparent bg-clip-text">
               Paster

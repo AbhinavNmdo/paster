@@ -17,7 +17,7 @@ interface ViewPageProps {
 
 function ViewPageLoader() {
     return (
-        <div className="flex flex-col min-h-screen bg-secondary/40">
+        <div className="flex flex-col min-h-screen">
             <Header />
             <main className="flex-1 w-full max-w-6xl mx-auto mt-8 px-4">
                 <div className="space-y-4">
@@ -30,7 +30,7 @@ function ViewPageLoader() {
     );
 }
 
-export default function ViewPage({ params }: ViewPageProps) {
+export default function ViewPage({ params: { id } }: ViewPageProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [isProtected, setIsProtected] = useState<boolean | null>(null);
   const [paste, setPaste] = useState<Paste | null | undefined>(null);
@@ -39,7 +39,7 @@ export default function ViewPage({ params }: ViewPageProps) {
   useEffect(() => {
     async function fetchData() {
       try {
-        const protectedStatus = await isPasteProtected(params.id);
+        const protectedStatus = await isPasteProtected(id);
 
         if (protectedStatus === null) {
           setNotFound(true);
@@ -50,7 +50,7 @@ export default function ViewPage({ params }: ViewPageProps) {
         setIsProtected(protectedStatus);
 
         if (!protectedStatus) {
-          const fetchedPaste = await getPasteData(params.id);
+          const fetchedPaste = await getPasteData(id);
           if (!fetchedPaste) {
              setNotFound(true);
           } else {
@@ -66,7 +66,7 @@ export default function ViewPage({ params }: ViewPageProps) {
       }
     }
     fetchData();
-  }, [params.id]);
+  }, [id]);
 
   if (isLoading) {
     return <ViewPageLoader />;
@@ -77,7 +77,7 @@ export default function ViewPage({ params }: ViewPageProps) {
   }
 
   if (isProtected) {
-    return <PasswordPrompt id={params.id} />;
+    return <PasswordPrompt id={id} />;
   }
 
   if (!paste) {

@@ -2,7 +2,7 @@
 
 import type { Paste } from '@/lib/db';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { materialDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Copy, Share, Check, Languages } from 'lucide-react';
@@ -23,16 +23,23 @@ export function CodeView({ paste }: CodeViewProps) {
   const { toast } = useToast();
 
   useEffect(() => {
+    // This code runs only on the client, after the component has mounted.
+    // This prevents a hydration mismatch error.
     setCurrentUrl(window.location.href);
-    setFormattedDate(
-        new Intl.DateTimeFormat('en-US', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric'
-      }).format(new Date(paste.createdAt))
-    );
+    try {
+      setFormattedDate(
+          new Intl.DateTimeFormat(undefined, { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric'
+        }).format(new Date(paste.createdAt))
+      );
+    } catch (e) {
+      // Handle potential invalid date format from DB
+      setFormattedDate('Invalid date');
+    }
   }, [paste.createdAt]);
 
   const handleCopy = (text: string, type: 'link' | 'code') => {
@@ -59,7 +66,7 @@ export function CodeView({ paste }: CodeViewProps) {
   };
 
   return (
-    <Card className="shadow-lg">
+    <Card className="shadow-lg border-primary/20">
       <CardHeader>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
@@ -71,31 +78,30 @@ export function CodeView({ paste }: CodeViewProps) {
           <div className="flex items-center gap-2">
               <Button variant="outline" onClick={() => handleCopy(currentUrl, 'link')}>
                 {isLinkCopied ? <Check className="mr-2 h-4 w-4 text-green-500" /> : <Share className="mr-2 h-4 w-4" />}
-                {isLinkCopied ? 'Link Copied!' : 'Share Link'}
+                {isLinkCopied ? 'Copied!' : 'Share'}
               </Button>
-              <Button variant="outline" onClick={() => handleCopy(paste.content, 'code')}>
-                {isCodeCopied ? <Check className="mr-2 h-4 w-4 text-green-500" /> : <Copy className="mr-2 h-4 w-4" />}
-                {isCodeCopied ? 'Code Copied!' : 'Copy Code'}
+              <Button onClick={() => handleCopy(paste.content, 'code')}>
+                {isCodeCopied ? <Check className="mr-2 h-4 w-4" /> : <Copy className="mr-2 h-4 w-4" />}
+                {isCodeCopied ? 'Copied!' : 'Copy Code'}
               </Button>
           </div>
         </div>
       </CardHeader>
       <CardContent>
         <div className="mb-4">
-            <Badge variant="secondary" className="text-lg px-4 py-2 rounded-md">
-                <Languages className="mr-2 h-5 w-5"/>
+            <Badge variant="secondary" className="text-md px-3 py-1 rounded-md">
+                <Languages className="mr-2 h-4 w-4"/>
                 {paste.language.charAt(0).toUpperCase() + paste.language.slice(1)}
             </Badge>
         </div>
         <div className="rounded-lg overflow-hidden border bg-black/90">
             <SyntaxHighlighter
               language={paste.language}
-              style={vscDarkPlus}
+              style={materialDark}
               customStyle={{
                 margin: 0,
                 padding: '1.5rem',
-                borderRadius: '0.5rem',
-                backgroundColor: 'transparent'
+                backgroundColor: 'hsl(var(--secondary) / 0.5)',
               }}
               codeTagProps={{
                 className: 'font-code text-base',

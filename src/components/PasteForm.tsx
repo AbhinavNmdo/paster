@@ -24,7 +24,8 @@ function SubmitButton() {
     <Button
       type="submit"
       disabled={pending}
-      className="w-full md:w-auto text-lg py-6 px-8 transition-all duration-300 ease-in-out hover:shadow-lg"
+      size="lg"
+      className="w-full md:w-auto text-lg py-6 px-8 transition-all duration-300 ease-in-out hover:shadow-primary/20 hover:scale-105"
     >
       {pending ? (
         <>
@@ -64,14 +65,14 @@ export function PasteForm() {
 
 
   return (
-    <form action={formAction} className="space-y-6">
+    <form action={formAction} className="space-y-8">
       <div className="space-y-2">
-        <Label htmlFor="content" className="text-lg">Your Text / Code</Label>
+        <Label htmlFor="content" className="text-lg font-medium">Your Text / Code</Label>
         <Textarea
           id="content"
           name="content"
           placeholder="Paste anything you want to share..."
-          className="min-h-[300px] font-code text-base bg-white shadow-inner"
+          className="min-h-[350px] font-code text-base bg-secondary/50 shadow-inner focus:bg-background"
           required
         />
          {state.errors?.content && (
@@ -79,11 +80,11 @@ export function PasteForm() {
         )}
       </div>
 
-      <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-6">
         <div className="w-full md:w-auto space-y-2">
-          <Label htmlFor="language" className="text-lg">Language</Label>
+          <Label htmlFor="language" className="text-lg font-medium">Language</Label>
           <Select name="language" defaultValue="auto">
-            <SelectTrigger id="language" className="w-full md:w-[220px] bg-white shadow-inner">
+            <SelectTrigger id="language" className="w-full md:w-[240px] bg-secondary/50 shadow-inner text-base py-5">
               <SelectValue placeholder="Detect automatically" />
             </SelectTrigger>
             <SelectContent>

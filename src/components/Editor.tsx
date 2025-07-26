@@ -71,6 +71,9 @@ export const Editor = forwardRef<EditorRef, CodeEditorProps>(
             },
             renderValidationDecorations: 'off',
             suggestOnTriggerCharacters: false,
+            stickyScroll: {
+              enabled: false
+            }
           }}
         />
       </div>

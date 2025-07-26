@@ -70,20 +70,3 @@
     }
   }
 }
-
-.glow-card::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(
-    circle at var(--x, 0) var(--y, 0),
-    hsl(var(--primary) / 0.15),
-    transparent 25%
-  );
-  border-radius: inherit; /* Use the parent's border-radius */
-  pointer-events: none;
-  transition: background 0.2s ease-out;
-}

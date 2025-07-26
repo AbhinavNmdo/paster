@@ -3,24 +3,15 @@
 import Header from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useMousePosition } from '@/hooks/useMousePosition';
 import { FileQuestion } from 'lucide-react';
 import Link from 'next/link';
-import { useRef } from 'react';
 
 export default function NotFound() {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const { x, y } = useMousePosition(cardRef);
-
   return (
     <div className="flex flex-col items-center min-h-screen">
       <Header />
       <main className="flex-1 flex items-center justify-center w-full max-w-md p-4">
-        <Card 
-          ref={cardRef}
-          className="glow-card relative text-center w-full transition-all"
-          style={{ '--x': `${x}px`, '--y': `${y}px` } as React.CSSProperties}
-        >
+        <Card className="relative text-center w-full transition-all border-primary/20 bg-card/80 backdrop-blur-sm">
           <CardHeader>
             <div className="mx-auto bg-destructive/10 rounded-full p-4 w-fit">
               <FileQuestion className="w-12 h-12 text-destructive" />

@@ -6,11 +6,9 @@ import { materialDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Copy, Share, Check, Languages } from 'lucide-react';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
-import { useMousePosition } from '@/hooks/useMousePosition';
-
 
 interface CodeViewProps {
   paste: Paste;
@@ -21,8 +19,6 @@ export function CodeView({ paste }: CodeViewProps) {
   const [isCodeCopied, setIsCodeCopied] = useState(false);
   const [currentUrl, setCurrentUrl] = useState('');
   const [formattedDate, setFormattedDate] = useState<string | null>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
-  const { x, y } = useMousePosition(cardRef);
 
   const { toast } = useToast();
 
@@ -70,11 +66,7 @@ export function CodeView({ paste }: CodeViewProps) {
   };
 
   return (
-    <Card 
-      ref={cardRef}
-      className="glow-card relative transition-all border-primary/20"
-      style={{ '--x': `${x}px`, '--y': `${y}px` } as React.CSSProperties}
-    >
+    <Card className="relative transition-all border-primary/20 bg-card/80 backdrop-blur-sm">
       <CardHeader>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>

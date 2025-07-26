@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState, useEffect, useState, useRef } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { verifyPassword, PasswordFormState } from '@/app/actions';
 import { CodeView } from '@/components/CodeView';
@@ -12,7 +12,6 @@ import { KeyRound, Loader2, LogIn } from 'lucide-react';
 import Header from '@/components/Header';
 import { useToast } from '@/hooks/use-toast';
 import type { Paste } from '@/lib/db';
-import { useMousePosition } from '@/hooks/useMousePosition';
 
 
 interface PasswordPromptProps {
@@ -34,8 +33,6 @@ export default function PasswordPrompt({ id }: PasswordPromptProps) {
   const [state, formAction] = useActionState(verifyPassword, initialState);
   const [showPaste, setShowPaste] = useState(false);
   const { toast } = useToast();
-  const cardRef = useRef<HTMLDivElement>(null);
-  const { x, y } = useMousePosition(cardRef);
 
   useEffect(() => {
     if (state.decryptedContent) {
@@ -72,11 +69,7 @@ export default function PasswordPrompt({ id }: PasswordPromptProps) {
        <Header />
       <main className="flex-1 flex items-center justify-center w-full p-4">
         <div className="w-full max-w-md">
-          <Card 
-            ref={cardRef}
-            className="glow-card relative transition-all"
-            style={{ '--x': `${x}px`, '--y': `${y}px` } as React.CSSProperties}
-          >
+          <Card className="relative transition-all border-primary/20 bg-card/80 backdrop-blur-sm">
             <CardHeader className="text-center">
               <div className="mx-auto bg-primary/10 rounded-full p-4 w-fit mb-4">
                 <KeyRound className="w-10 h-10 text-primary" />

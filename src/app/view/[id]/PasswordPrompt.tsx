@@ -69,7 +69,7 @@ export default function PasswordPrompt({ id }: PasswordPromptProps) {
        <Header />
       <main className="flex-1 flex items-center justify-center w-full p-4">
         <div className="w-full max-w-md">
-          <Card className="relative transition-all border-primary/20 bg-card/80 backdrop-blur-sm">
+          <Card className="relative transition-all border-primary/20 bg-card/80 backdrop-blur-sm hover:shadow-primary/20 hover:shadow-2xl hover:border-primary/40">
             <CardHeader className="text-center">
               <div className="mx-auto bg-primary/10 rounded-full p-4 w-fit mb-4">
                 <KeyRound className="w-10 h-10 text-primary" />

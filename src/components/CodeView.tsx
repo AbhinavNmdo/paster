@@ -66,7 +66,7 @@ export function CodeView({ paste }: CodeViewProps) {
   };
 
   return (
-    <Card className="relative transition-all border-primary/20 bg-card/80 backdrop-blur-sm">
+    <Card className="relative transition-all border-primary/20 bg-card/80 backdrop-blur-sm hover:shadow-primary/20 hover:shadow-2xl hover:border-primary/40">
       <CardHeader>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>

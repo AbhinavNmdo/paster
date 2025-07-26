@@ -18,12 +18,22 @@ export function CodeView({ paste }: CodeViewProps) {
   const [isLinkCopied, setIsLinkCopied] = useState(false);
   const [isCodeCopied, setIsCodeCopied] = useState(false);
   const [currentUrl, setCurrentUrl] = useState('');
+  const [formattedDate, setFormattedDate] = useState<string | null>(null);
 
   const { toast } = useToast();
 
   useEffect(() => {
     setCurrentUrl(window.location.href);
-  }, []);
+    setFormattedDate(
+        new Intl.DateTimeFormat('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric'
+      }).format(new Date(paste.createdAt))
+    );
+  }, [paste.createdAt]);
 
   const handleCopy = (text: string, type: 'link' | 'code') => {
     navigator.clipboard.writeText(text).then(() => {
@@ -48,21 +58,15 @@ export function CodeView({ paste }: CodeViewProps) {
     });
   };
 
-  const formattedDate = new Intl.DateTimeFormat('en-US', { 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric'
-  }).format(new Date(paste.createdAt));
-
   return (
     <Card className="shadow-lg">
       <CardHeader>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <CardTitle className="text-2xl font-headline">Shared Paste</CardTitle>
-            <CardDescription>Created on {formattedDate}</CardDescription>
+            <CardDescription>
+              {formattedDate ? `Created on ${formattedDate}` : 'Loading date...'}
+            </CardDescription>
           </div>
           <div className="flex items-center gap-2">
               <Button variant="outline" onClick={() => handleCopy(currentUrl, 'link')}>

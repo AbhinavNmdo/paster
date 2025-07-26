@@ -95,25 +95,24 @@ export function PasteForm() {
     <form action={formAction} className="space-y-6">
       <input type="hidden" name="content" value={content} />
       <div className="space-y-2">
-        <div className="flex flex-wrap justify-between items-center mb-2 gap-2">
-          <Label htmlFor="content-editor" className="text-base font-medium">Your Text / Code</Label>
+        <div className="flex justify-between items-center mb-2 gap-2">
+          <Select name="language" value={language} onValueChange={setLanguage}>
+            <SelectTrigger id="language" className="bg-secondary/50 shadow-inner text-xs h-8 w-[180px]">
+                <Languages className="mr-2 h-4 w-4" /> 
+                <SelectValue placeholder="Detect automatically" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="auto">Detect automatically</SelectItem>
+              {supportedLanguages.map((lang) => (
+                <SelectItem key={lang} value={lang}>
+                  {lang.charAt(0).toUpperCase() + lang.slice(1)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <div className="flex items-center gap-2 flex-shrink-0">
-            <Select name="language" value={language} onValueChange={setLanguage}>
-              <SelectTrigger id="language" className="bg-secondary/50 shadow-inner text-xs h-8 w-[180px]">
-                 <Languages className="mr-2 h-4 w-4" /> 
-                 <SelectValue placeholder="Detect automatically" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="auto">Detect automatically</SelectItem>
-                {supportedLanguages.map((lang) => (
-                  <SelectItem key={lang} value={lang}>
-                    {lang.charAt(0).toUpperCase() + lang.slice(1)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
             {(isDetecting || detectedLanguage) && (
-               <Badge variant="outline" className="whitespace-nowrap h-8 text-xs">
+                <Badge variant="outline" className="whitespace-nowrap h-8 text-xs">
                 {isDetecting ? (
                   <Loader2 className="mr-1 h-3 w-3 animate-spin" />
                 ) : null}

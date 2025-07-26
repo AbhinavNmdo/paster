@@ -91,9 +91,11 @@ export default function ViewPage({ params }: ViewPageProps) {
       <main className="flex-1 w-full max-w-6xl mx-auto mt-8 px-4">
         <CodeView paste={paste} />
       </main>
-      <footer className="py-4 text-center text-sm text-muted-foreground">
-        Powered by Firebase and Google AI
-      </footer>
     </div>
   );
+}
+
+// @ts-ignore
+export async function generateStaticParams() {
+  return [];
 }

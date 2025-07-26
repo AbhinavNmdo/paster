@@ -19,9 +19,6 @@ export default function Home() {
           </CardContent>
         </Card>
       </main>
-      <footer className="py-6 text-center text-sm text-muted-foreground">
-        Powered by Firebase and Google AI
-      </footer>
     </div>
   );
 }

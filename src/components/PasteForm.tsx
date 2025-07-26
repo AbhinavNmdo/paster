@@ -96,7 +96,7 @@ export function PasteForm() {
     <form action={formAction} className="space-y-6">
       <input type="hidden" name="content" value={content} />
       <div className="space-y-2">
-        <div className="flex justify-between items-center mb-2 gap-2">
+         <div className="flex justify-between items-center mb-2 gap-2">
           <Select name="language" value={language} onValueChange={setLanguage}>
             <SelectTrigger id="language" className="bg-secondary/50 shadow-inner text-xs h-8 w-[180px]">
                 <Languages className="mr-2 h-4 w-4" /> 

@@ -69,7 +69,8 @@ export const Editor = forwardRef<EditorRef, CodeEditorProps>(
             parameterHints: {
               enabled: false
             },
-            renderValidationDecorations: 'off'
+            renderValidationDecorations: 'off',
+            suggestOnTriggerCharacters: false,
           }}
         />
       </div>

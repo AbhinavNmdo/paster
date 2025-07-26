@@ -24,8 +24,7 @@ export default function RootLayout({
       </head>
       <body 
         className={cn(
-          "font-body antialiased h-full bg-background",
-          "bg-[radial-gradient(ellipse_120%_80%_at_50%_-20%,rgba(120,119,198,0.3),transparent)]"
+          "font-body antialiased bg-background"
         )}
       >
         <ThemeProvider
@@ -34,7 +33,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <div className="relative min-h-screen bg-[radial-gradient(ellipse_120%_80%_at_50%_-20%,rgba(120,119,198,0.3),transparent)]">
+            {children}
+          </div>
           <Toaster />
         </ThemeProvider>
       </body>

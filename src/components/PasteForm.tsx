@@ -2,7 +2,6 @@
 
 import { useFormStatus } from 'react-dom';
 import { useActionState, useEffect, useState, useTransition } from 'react';
-import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import {
@@ -20,6 +19,7 @@ import { Input } from './ui/input';
 import { Badge } from './ui/badge';
 import { detectLanguage } from '@/ai/flows/detect-language';
 import { useDebounce } from '@/hooks/use-debounce';
+import { Editor } from './Editor';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -93,16 +93,13 @@ export function PasteForm() {
 
   return (
     <form action={formAction} className="space-y-6">
+      <input type="hidden" name="content" value={content} />
       <div className="space-y-2">
-        <Label htmlFor="content" className="text-base font-medium">Your Text / Code</Label>
-        <Textarea
-          id="content"
-          name="content"
+        <Label htmlFor="content-editor" className="text-base font-medium">Your Text / Code</Label>
+        <Editor 
           value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="Paste anything you want to share..."
-          className="min-h-[300px] font-code text-sm bg-secondary/50 shadow-inner focus:bg-background transition-colors duration-300 focus:ring-2 focus:ring-primary/50"
-          required
+          onChange={(value) => setContent(value || '')}
+          language={language !== 'auto' ? language : (detectedLanguage?.toLowerCase() ?? 'plaintext')}
         />
          {state.errors?.content && (
           <p className="text-sm font-medium text-destructive">{state.errors.content}</p>

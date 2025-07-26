@@ -8,12 +8,7 @@ import PasswordPrompt from "./PasswordPrompt";
 import { Skeleton } from '@/components/ui/skeleton';
 import { getPasteData, isPasteProtected } from './actions';
 import NotFound from './not-found';
-
-interface ViewPageProps {
-  params: {
-    id: string;
-  };
-}
+import { useParams } from 'next/navigation';
 
 function ViewPageLoader() {
     return (
@@ -30,7 +25,9 @@ function ViewPageLoader() {
     );
 }
 
-export default function ViewPage({ params: { id } }: ViewPageProps) {
+export default function ViewPage() {
+  const params = useParams();
+  const id = params.id as string;
   const [isLoading, setIsLoading] = useState(true);
   const [isProtected, setIsProtected] = useState<boolean | null>(null);
   const [paste, setPaste] = useState<Paste | null | undefined>(null);
@@ -38,6 +35,7 @@ export default function ViewPage({ params: { id } }: ViewPageProps) {
 
   useEffect(() => {
     async function fetchData() {
+      if (!id) return;
       try {
         const protectedStatus = await isPasteProtected(id);
 

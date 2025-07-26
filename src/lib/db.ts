@@ -18,6 +18,7 @@ function getClient(): Promise<MongoClient> {
 
   const MONGODB_URI = process.env.MONGODB_URI;
   if (!MONGODB_URI) {
+    // This will now throw a more explicit error if the URI is missing.
     throw new Error('Please define the MONGODB_URI environment variable inside .env');
   }
 

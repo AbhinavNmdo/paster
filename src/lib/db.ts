@@ -49,28 +49,37 @@ function fromMongo<T extends Document>(doc: WithId<T> | null): T | undefined {
 }
 
 function parseExpiration(expires?: string): number | null {
-  if (!expires || expires === 'never') {
-    return null;
-  }
-  const unit = expires.slice(-1);
-  const value = parseInt(expires.slice(0, -1), 10);
+    if (!expires || expires === 'never') {
+      return null;
+    }
+    
+    // Check if the expiration string contains a number and a unit (e.g., '10m', '1h')
+    const match = expires.match(/^(\d+)([mhdw])$/);
 
-  if (isNaN(value)) {
-    return null;
-  }
+    if (match) {
+        const value = parseInt(match[1], 10);
+        const unit = match[2];
 
-  switch(unit) {
-    case 'm': return value * 60 * 1000;
-    case 'h': return value * 60 * 60 * 1000;
-    case 'd': return value * 24 * 60 * 60 * 1000;
-    case 'w': return value * 7 * 24 * 60 * 60 * 1000;
-    default: 
-        // If no unit, assume minutes for custom values
-        if (!isNaN(parseInt(expires, 10))) {
-             return parseInt(expires, 10) * 60 * 1000;
+        if (isNaN(value)) {
+            return null;
         }
-        return null;
-  }
+
+        switch(unit) {
+            case 'm': return value * 60 * 1000;
+            case 'h': return value * 60 * 60 * 1000;
+            case 'd': return value * 24 * 60 * 60 * 1000;
+            case 'w': return value * 7 * 24 * 60 * 60 * 1000;
+            default: return null;
+        }
+    }
+
+    // Fallback for plain numbers, assuming minutes (for custom values)
+    const justMinutes = parseInt(expires, 10);
+    if (!isNaN(justMinutes)) {
+        return justMinutes * 60 * 1000;
+    }
+
+    return null;
 }
 
 export async function savePaste(content: string, language: string, hasPassword?: boolean, expires?: string): Promise<string> {

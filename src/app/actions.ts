@@ -12,7 +12,7 @@ const formSchema = z.object({
   language: z.string().optional(),
   password: z.string().optional(),
   expires: z.string().optional(),
-  customExpires: z.string().optional(),
+  customExpires: z.string().nullish(),
 });
 
 export interface FormState {
@@ -49,7 +49,15 @@ export async function createPaste(
   let id: string;
   
   let expirationValue = expires;
-  if (expires === 'custom' && customExpires) {
+  if (expires === 'custom') {
+    if (!customExpires) {
+        return {
+            message: 'Invalid custom expiration.',
+            errors: {
+                customExpires: ['Please enter a value for the custom expiration.'],
+            }
+        }
+    }
     const customMinutes = parseInt(customExpires, 10);
     if (isNaN(customMinutes) || customMinutes <= 0) {
       return {

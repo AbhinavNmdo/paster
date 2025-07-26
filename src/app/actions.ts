@@ -48,7 +48,8 @@ export async function createPaste(
   try {
     let language = languageOverride;
     if (!language || language === 'auto') {
-      const detectionResult = await detectLanguage({ code: content });
+      const contentForDetection = content.substring(0, 2000);
+      const detectionResult = await detectLanguage({ code: contentForDetection });
       language = detectionResult.language.toLowerCase();
     }
     

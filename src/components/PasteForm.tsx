@@ -62,7 +62,8 @@ export function PasteForm() {
     if (debouncedContent && language === 'auto') {
       startDetecting(async () => {
         try {
-          const result = await detectLanguage({ code: debouncedContent });
+          const contentForDetection = debouncedContent.substring(0, 2000);
+          const result = await detectLanguage({ code: contentForDetection });
           setDetectedLanguage(result.language);
         } catch (error) {
           console.error("Language detection failed:", error);

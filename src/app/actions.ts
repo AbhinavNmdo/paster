@@ -36,6 +36,7 @@ export async function createPaste(
   }
 
   const { content, language: languageOverride } = validatedFields.data;
+  let id: string;
 
   try {
     let language = languageOverride;
@@ -44,10 +45,7 @@ export async function createPaste(
       language = detectionResult.language.toLowerCase();
     }
 
-    const id = await savePaste(content, language);
-    
-    // Redirect must be called outside of try/catch
-    redirect(`/view/${id}`);
+    id = await savePaste(content, language);
 
   } catch (error) {
     console.error(error);
@@ -58,4 +56,6 @@ export async function createPaste(
       },
     };
   }
+  
+  redirect(`/view/${id}`);
 }

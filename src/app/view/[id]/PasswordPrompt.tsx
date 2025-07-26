@@ -54,9 +54,9 @@ export default function PasswordPrompt({ id }: PasswordPromptProps) {
       createdAt: new Date(), // This is not ideal, but we don't have the original date here.
     };
     return (
-      <div className="flex flex-col min-h-screen bg-secondary/40">
+      <div className="flex flex-col min-h-screen">
         <Header />
-        <main className="flex-1 w-full max-w-6xl mx-auto mt-8 px-4">
+        <main className="flex-1 w-full max-w-6xl mx-auto px-4 py-8">
           <CodeView paste={paste} />
         </main>
       </div>

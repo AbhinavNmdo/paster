@@ -8,10 +8,10 @@ import Link from 'next/link';
 
 export default function NotFound() {
   return (
-    <div className="flex flex-col items-center min-h-screen p-4 md:p-8">
+    <div className="flex flex-col items-center min-h-screen">
       <Header />
-      <main className="w-full max-w-md mt-16">
-        <Card className="text-center shadow-lg">
+      <main className="flex-1 flex items-center justify-center w-full max-w-md p-4">
+        <Card className="text-center shadow-lg w-full">
           <CardHeader>
             <div className="mx-auto bg-destructive/10 rounded-full p-4 w-fit">
               <FileQuestion className="w-12 h-12 text-destructive" />

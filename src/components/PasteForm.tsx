@@ -1,6 +1,7 @@
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
+import { useFormStatus } from 'react-dom';
+import { useActionState, useEffect } from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -14,7 +15,6 @@ import {
 import { createPaste, type FormState } from '@/app/actions';
 import { supportedLanguages } from '@/lib/languages';
 import { Share2, Loader2 } from 'lucide-react';
-import { useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
 function SubmitButton() {
@@ -43,7 +43,7 @@ function SubmitButton() {
 
 export function PasteForm() {
   const initialState: FormState = { message: '' };
-  const [state, formAction] = useFormState(createPaste, initialState);
+  const [state, formAction] = useActionState(createPaste, initialState);
   const { toast } = useToast();
 
   useEffect(() => {

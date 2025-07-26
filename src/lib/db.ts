@@ -5,7 +5,9 @@ export interface Paste {
   id: string;
   content: string;
   language: string;
+  hasPassword?: boolean;
   createdAt: Date;
+  expiresAt?: Date | null;
 }
 
 let client: MongoClient | null = null;
@@ -33,7 +35,9 @@ const dbName = 'text-sharer';
 async function getPastesCollection() {
     const client = await getClient();
     const db = client.db(dbName);
-    return db.collection<Paste>('pastes');
+    const collection = db.collection<Paste>('pastes');
+    await collection.createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+    return collection;
 }
 
 function fromMongo<T extends Document>(doc: WithId<T> | null): T | undefined {
@@ -44,13 +48,31 @@ function fromMongo<T extends Document>(doc: WithId<T> | null): T | undefined {
     return rest as T;
 }
 
-export async function savePaste(content: string, language: string): Promise<string> {
+const expirationMap: Record<string, number | null> = {
+  'never': null,
+  '10m': 10 * 60 * 1000,
+  '1h': 60 * 60 * 1000,
+  '1d': 24 * 60 * 60 * 1000,
+  '1w': 7 * 24 * 60 * 60 * 1000,
+}
+
+export async function savePaste(content: string, language: string, hasPassword?: boolean, expires?: string): Promise<string> {
   const id = randomBytes(4).toString('hex');
+  
+  const now = new Date();
+  let expiresAt: Date | null = null;
+
+  if (expires && expirationMap[expires]) {
+    expiresAt = new Date(now.getTime() + expirationMap[expires]!);
+  }
+  
   const newPaste: Paste = {
     id,
     content,
     language,
-    createdAt: new Date(),
+    hasPassword: !!hasPassword,
+    createdAt: now,
+    expiresAt,
   };
   
   const pastes = await getPastesCollection();
@@ -62,4 +84,9 @@ export async function getPaste(id: string): Promise<Paste | undefined> {
   const pastes = await getPastesCollection();
   const pasteDoc = await pastes.findOne({ id });
   return fromMongo(pasteDoc);
+}
+
+export async function isPastePasswordProtected(id: string): Promise<boolean> {
+  const paste = await getPaste(id);
+  return !!paste?.hasPassword;
 }

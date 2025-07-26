@@ -1,7 +1,8 @@
-import { getPaste } from "@/lib/db";
+import { getPaste, isPastePasswordProtected } from "@/lib/db";
 import { notFound } from "next/navigation";
 import Header from "@/components/Header";
 import { CodeView } from "@/components/CodeView";
+import PasswordPrompt from "./PasswordPrompt";
 
 interface ViewPageProps {
   params: {
@@ -10,6 +11,12 @@ interface ViewPageProps {
 }
 
 export default async function ViewPage({ params }: ViewPageProps) {
+  const isProtected = await isPastePasswordProtected(params.id);
+
+  if (isProtected) {
+    return <PasswordPrompt id={params.id} />;
+  }
+  
   const paste = await getPaste(params.id);
 
   if (!paste) {

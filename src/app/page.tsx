@@ -10,7 +10,7 @@ export default function Home() {
         <Card className="shadow-2xl shadow-primary/10 border-primary/20 bg-card/80 backdrop-blur-sm">
           <CardHeader className="text-center">
             <CardTitle className="text-3xl font-headline">Create a New Paste</CardTitle>
-            <CardDescription>Share code, notes, and snippets securely.</CardDescription>
+            <CardDescription>Share encrypted, auto-expiring text pastes securely.</CardDescription>
           </CardHeader>
           <CardContent>
             <PasteForm />

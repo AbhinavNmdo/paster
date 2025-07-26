@@ -1,6 +1,5 @@
 import { FileText, Github } from 'lucide-react';
 import Link from 'next/link';
-import { ThemeSwitcher } from './ThemeSwitcher';
 import { Button } from './ui/button';
 
 export default function Header() {
@@ -12,7 +11,7 @@ export default function Header() {
               <FileText className="w-6 h-6 text-primary transition-transform group-hover:scale-110" />
             </div>
             <h1 className="bg-gradient-to-r from-primary via-purple-400 to-blue-400 text-transparent bg-clip-text">
-              Text Sharer
+              Paster
             </h1>
         </Link>
         <div className="flex items-center gap-2">
@@ -22,7 +21,6 @@ export default function Header() {
               <span className="sr-only">GitHub</span>
             </Link>
           </Button>
-          <ThemeSwitcher />
         </div>
       </div>
     </header>

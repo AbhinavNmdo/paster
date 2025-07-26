@@ -47,7 +47,7 @@ export default function RootLayout({
             ref={containerRef}
             className="relative min-h-screen bg-background"
             style={{
-              background: `
+              backgroundImage: `
                 radial-gradient(
                   400px circle at ${x}px ${y}px,
                   hsl(var(--primary) / 0.15),

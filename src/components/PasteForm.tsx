@@ -98,7 +98,7 @@ export function PasteForm() {
       <div className="space-y-2">
          <div className="flex justify-between items-center mb-2 gap-2">
           <Select name="language" value={language} onValueChange={setLanguage}>
-            <SelectTrigger id="language" className="bg-secondary/50 shadow-inner text-xs h-8 w-[180px]">
+            <SelectTrigger id="language" className="bg-secondary/50 shadow-inner text-xs h-8 w-[180px] justify-start">
                 <Languages className="mr-2 h-4 w-4" /> 
                 <SelectValue placeholder="Detect automatically" />
             </SelectTrigger>

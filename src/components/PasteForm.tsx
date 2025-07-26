@@ -1,7 +1,7 @@
 'use client';
 
 import { useFormStatus } from 'react-dom';
-import { useActionState, useEffect } from 'react';
+import { useActionState, useEffect, useState, useTransition } from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -14,8 +14,12 @@ import {
 } from '@/components/ui/select';
 import { createPaste, type FormState } from '@/app/actions';
 import { supportedLanguages } from '@/lib/languages';
-import { Share2, Loader2 } from 'lucide-react';
+import { Share2, Loader2, Languages, EyeOff, Timer, KeyRound } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { Input } from './ui/input';
+import { Badge } from './ui/badge';
+import { detectLanguage } from '@/ai/flows/detect-language';
+import { useDebounce } from '@/hooks/use-debounce';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -25,7 +29,7 @@ function SubmitButton() {
       type="submit"
       disabled={pending}
       size="lg"
-      className="w-full md:w-auto text-lg py-6 px-8 transition-all duration-300 ease-in-out hover:shadow-primary/20 hover:scale-105"
+      className="w-full text-lg py-6 px-8 transition-all duration-300 ease-in-out hover:shadow-primary/20 hover:scale-105 bg-primary/90 hover:bg-primary"
     >
       {pending ? (
         <>
@@ -47,6 +51,29 @@ export function PasteForm() {
   const [state, formAction] = useActionState(createPaste, initialState);
   const { toast } = useToast();
 
+  const [content, setContent] = useState('');
+  const [language, setLanguage] = useState('auto');
+  const [detectedLanguage, setDetectedLanguage] = useState<string | null>(null);
+  const [isDetecting, startDetecting] = useTransition();
+
+  const debouncedContent = useDebounce(content, 500);
+
+  useEffect(() => {
+    if (debouncedContent && language === 'auto') {
+      startDetecting(async () => {
+        try {
+          const result = await detectLanguage({ code: debouncedContent });
+          setDetectedLanguage(result.language);
+        } catch (error) {
+          console.error("Language detection failed:", error);
+          setDetectedLanguage(null);
+        }
+      });
+    } else {
+      setDetectedLanguage(null);
+    }
+  }, [debouncedContent, language]);
+
   useEffect(() => {
     if (state.errors?.server) {
       toast({
@@ -65,14 +92,16 @@ export function PasteForm() {
 
 
   return (
-    <form action={formAction} className="space-y-8">
-      <div className="space-y-2">
+    <form action={formAction} className="space-y-6">
+      <div className="space-y-3">
         <Label htmlFor="content" className="text-lg font-medium">Your Text / Code</Label>
         <Textarea
           id="content"
           name="content"
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
           placeholder="Paste anything you want to share..."
-          className="min-h-[350px] font-code text-base bg-secondary/50 shadow-inner focus:bg-background"
+          className="min-h-[350px] font-code text-base bg-secondary/50 shadow-inner focus:bg-background transition-colors duration-300 focus:ring-2 focus:ring-primary/50"
           required
         />
          {state.errors?.content && (
@@ -80,23 +109,69 @@ export function PasteForm() {
         )}
       </div>
 
-      <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-        <div className="w-full md:w-auto space-y-2">
-          <Label htmlFor="language" className="text-lg font-medium">Language</Label>
-          <Select name="language" defaultValue="auto">
-            <SelectTrigger id="language" className="w-full md:w-[240px] bg-secondary/50 shadow-inner text-base py-5">
-              <SelectValue placeholder="Detect automatically" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="auto">Detect automatically</SelectItem>
-              {supportedLanguages.map((lang) => (
-                <SelectItem key={lang} value={lang}>
-                  {lang.charAt(0).toUpperCase() + lang.slice(1)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-3">
+           <Label htmlFor="language" className="text-lg font-medium flex items-center">
+            <Languages className="mr-2 h-5 w-5" /> Language
+          </Label>
+          <div className="flex items-center gap-2">
+            <Select name="language" value={language} onValueChange={setLanguage}>
+              <SelectTrigger id="language" className="w-full bg-secondary/50 shadow-inner text-base py-5">
+                <SelectValue placeholder="Detect automatically" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="auto">Detect automatically</SelectItem>
+                {supportedLanguages.map((lang) => (
+                  <SelectItem key={lang} value={lang}>
+                    {lang.charAt(0).toUpperCase() + lang.slice(1)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {(isDetecting || detectedLanguage) && (
+               <Badge variant="outline" className="whitespace-nowrap h-10">
+                {isDetecting ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : null}
+                {detectedLanguage ? `Detected: ${detectedLanguage}` : 'Detecting...'}
+              </Badge>
+            )}
+          </div>
         </div>
+
+        <div className="space-y-3">
+          <Label htmlFor="password" className="text-lg font-medium flex items-center">
+            <KeyRound className="mr-2 h-5 w-5" /> Password <span className='text-sm text-muted-foreground ml-2'>(Optional)</span>
+          </Label>
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            placeholder="Secure your paste"
+            className="bg-secondary/50 shadow-inner text-base py-5 focus:bg-background transition-colors duration-300"
+          />
+        </div>
+      </div>
+      
+      <div className="space-y-3">
+        <Label htmlFor="expires" className="text-lg font-medium flex items-center">
+          <Timer className="mr-2 h-5 w-5" /> Expiration
+        </Label>
+        <Select name="expires" defaultValue="never">
+          <SelectTrigger id="expires" className="w-full md:w-[240px] bg-secondary/50 shadow-inner text-base py-5">
+            <SelectValue placeholder="Set expiration time" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="never">Never</SelectItem>
+            <SelectItem value="10m">10 Minutes</SelectItem>
+            <SelectItem value="1h">1 Hour</SelectItem>
+            <SelectItem value="1d">1 Day</SelectItem>
+            <SelectItem value="1w">1 Week</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="flex justify-end pt-4">
         <SubmitButton />
       </div>
        {state.errors?.server && (

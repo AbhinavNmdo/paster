@@ -15,13 +15,6 @@ interface ViewPageProps {
   };
 }
 
-// This function is required for static export of dynamic routes.
-// We return an empty array because we don't want to pre-render any paste pages.
-// They will all be rendered on the client side.
-export async function generateStaticParams() {
-  return [];
-}
-
 function ViewPageLoader() {
     return (
         <div className="flex flex-col min-h-screen bg-secondary/40">

@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { MongoClient, WithId, Document } from 'mongodb';
 import { randomBytes } from 'crypto';
 

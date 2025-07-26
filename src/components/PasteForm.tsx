@@ -125,7 +125,7 @@ export function PasteForm() {
         <Editor 
           value={content}
           onChange={(value) => setContent(value || '')}
-          language={language !== 'auto' ? language : (detectedLanguage?.toLowerCase() ?? 'plaintext')}
+          language={language !== 'auto' ? language.toLowerCase() : (detectedLanguage?.toLowerCase() ?? 'plaintext')}
         />
          {state.errors?.content && (
           <p className="text-sm font-medium text-destructive">{state.errors.content}</p>
@@ -151,7 +151,7 @@ export function PasteForm() {
             <Timer className="mr-2 h-5 w-5" /> Expiration
           </Label>
           <Select name="expires" defaultValue="never">
-            <SelectTrigger id="expires" className="w-full bg-secondary/50 shadow-inner text-sm py-5 justify-start">
+            <SelectTrigger id="expires" className="w-full bg-secondary/50 shadow-inner text-sm py-5">
               <SelectValue placeholder="Set expiration time" />
             </SelectTrigger>
             <SelectContent>

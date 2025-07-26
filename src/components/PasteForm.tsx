@@ -1,7 +1,7 @@
 'use client';
 
 import { useFormStatus } from 'react-dom';
-import { useActionState, useEffect, useState, useTransition } from 'react';
+import { useActionState, useEffect, useState, useTransition, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import {
@@ -19,7 +19,7 @@ import { Input } from './ui/input';
 import { Badge } from './ui/badge';
 import { detectLanguage } from '@/ai/flows/detect-language';
 import { useDebounce } from '@/hooks/use-debounce';
-import { Editor } from './Editor';
+import { Editor, EditorRef } from './Editor';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -50,6 +50,7 @@ export function PasteForm() {
   const initialState: FormState = { message: '' };
   const [state, formAction] = useActionState(createPaste, initialState);
   const { toast } = useToast();
+  const editorRef = useRef<EditorRef>(null);
 
   const [content, setContent] = useState('');
   const [language, setLanguage] = useState('auto');
@@ -92,11 +93,16 @@ export function PasteForm() {
   }, [state, toast]);
 
 
+  const handleFormAction = (formData: FormData) => {
+    const editorContent = editorRef.current?.getValue() || '';
+    formData.set('content', editorContent);
+    formAction(formData);
+  };
+
   return (
-    <form action={formAction} className="space-y-6">
-      <input type="hidden" name="content" value={content} />
+    <form action={handleFormAction} className="space-y-6">
       <div className="space-y-2">
-         <div className="flex justify-between items-center mb-2 gap-2">
+         <div className="flex justify-between items-center mb-2 gap-2 flex-wrap">
           <Select name="language" value={language} onValueChange={setLanguage}>
             <SelectTrigger id="language" className="bg-secondary/50 shadow-inner text-xs h-8 w-[180px] justify-start">
                 <Languages className="mr-2 h-4 w-4" /> 
@@ -123,6 +129,7 @@ export function PasteForm() {
           </div>
         </div>
         <Editor 
+          ref={editorRef}
           value={content}
           onChange={(value) => setContent(value || '')}
           language={language !== 'auto' ? language.toLowerCase() : (detectedLanguage?.toLowerCase() ?? 'plaintext')}
